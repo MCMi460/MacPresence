@@ -13,7 +13,7 @@ class Presence:
             ('small_image', str),
             ('small_text', str),
             ('id', str),
-            ('size', int),
+            ('size', tuple),
             ('match', str),
             ('join', str),
             ('spectate', str),
@@ -55,8 +55,11 @@ class Presence:
                 dictionary[key] = self._fix_activity(dictionary[key])
             if dictionary[key] is None:
                 del dictionary[key]
-            elif not isinstance(dictionary[key], dict(self._types)[key]):
-                raise TypeError('Presence field \'%s\' does not match type \'%s\'' % (key, dict(self._types)[key]))
+            elif not isinstance(dictionary[key], dict) and not isinstance(dictionary[key], dict(self._types)[key]):
+                try:
+                    dictionary[key] = dict(self._types)[key](dictionary[key])
+                except:
+                    raise TypeError('Presence field \'%s\' does not match type \'%s\'' % (key, dict(self._types)[key]))
         return dictionary
 
     def to_JSON(self) -> str:

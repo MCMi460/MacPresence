@@ -9,6 +9,8 @@ class IPC:
 
         self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
 
+        self.evts:dict = {}
+
         self.Opcode = {
             'HANDSHAKE': 0,
             'FRAME': 1,
@@ -66,14 +68,28 @@ class IPC:
         except socket.error as err:
             raise err
 
-    def _read(self):
+    def _read(self) -> typing.Generator[typing.Tuple[tuple, dict], None, None]:
         response = self.socket.recv(1024)
-        header = struct.unpack('<II', response[:8])
-        data = json.loads(response[8:].decode('utf-8'))
-        if data.get('code') in self.RPC_Errors:
-            raise Exception('%s: %s' % (header, data))
 
-        return header, data
+        # Because of how generators work, events are only called when they are handled
+        while len(response) > 0:
+            header = struct.unpack('<II', response[:8])
+            data = json.loads(response[8:8+header[1]].decode('utf-8'))
+            if data['evt'] in self.evts:
+                self.evts[data['evt']](header, data)
+            yield header, data
+            response = response[8+header[1]:]
+        return
+    
+    def _subscribe(self, evt:str, func:callable):
+        self.evts[evt] = func
+        return self._request(
+            self.Opcode['FRAME'],
+            'SUBSCRIBE',
+            {
+                'evt': evt,
+            },
+        )
 
     def close(self):
         close = self._send(self.Opcode['CLOSE'], {})

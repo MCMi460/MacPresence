@@ -8,29 +8,19 @@ class Client:
 
         self.pid = os.getpid()
 
-    def update(self, presence:Presence):
+    def update(self, presence:typing.Optional[Presence], *, handle_generator:bool = True):
         self.IPC._request(
             self.IPC.Opcode['FRAME'],
             'SET_ACTIVITY',
             {
                 'args': {
-                    'activity': presence.to_dict(),
+                    'activity': presence.to_dict() if presence else None,
                     'pid': self.pid,
                 }
             }
         )
 
-        return self.read()
+        return list(self.read()) if handle_generator else self.read()
     
     def read(self):
         return self.IPC._read()
-    
-    def subscribe(self, **kwargs:dict):
-        evt:str = kwargs['evt']
-        return self.IPC._request(
-            self.IPC.Opcode['FRAME'],
-            'SUBSCRIBE',
-            {
-                'evt': evt,
-            },
-        )
