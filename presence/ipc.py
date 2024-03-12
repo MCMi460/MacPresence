@@ -90,6 +90,16 @@ class IPC:
                 'evt': evt,
             },
         )
+    
+    def _unsubscribe(self, evt:str):
+        del self.evts[evt]
+        return self._request(
+            self.Opcode['FRAME'],
+            'UNSUBSCRIBE',
+            {
+                'evt': evt,
+            },
+        )
 
     def close(self):
         close = self._send(self.Opcode['CLOSE'], {})

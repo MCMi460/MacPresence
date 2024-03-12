@@ -24,6 +24,7 @@ def main():
         print(header)
         print(data)
     cli.IPC._subscribe('ACTIVITY_JOIN_REQUEST', handle_join_request)
+    #cli.IPC._unsubscribe('ACTIVITY_JOIN_REQUEST')
 
     while True:
         print(cli.update(example_presence))
