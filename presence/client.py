@@ -8,7 +8,7 @@ class Client:
 
         self.pid = os.getpid()
 
-    def update(self, presence:typing.Optional[Presence], *, handle_generator:bool = True):
+    def update(self, presence:typing.Optional[Presence] = None, *, handle_generator:bool = True):
         self.IPC._request(
             self.IPC.Opcode['FRAME'],
             'SET_ACTIVITY',
