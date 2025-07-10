@@ -19,6 +19,7 @@ class Presence:
             ('spectate', str),
             ('buttons', list),
             ('instance', bool),
+            ('type', ActivityType),
         ]
         
         self._activity = self._fix_activity({
@@ -45,6 +46,7 @@ class Presence:
             },
             'buttons': fields.get('buttons'),
             'instance': fields.get('instance'),
+            'type': fields.get('type', ActivityType.PLAYING),
         })
     
     def _fix_activity(self, dictionary:dict) -> typing.Optional[dict]:
@@ -55,18 +57,21 @@ class Presence:
                 dictionary[key] = self._fix_activity(dictionary[key])
             if dictionary[key] is None:
                 del dictionary[key]
+                continue
             elif not isinstance(dictionary[key], dict) and not isinstance(dictionary[key], dict(self._types)[key]):
                 try:
                     dictionary[key] = dict(self._types)[key](dictionary[key])
                 except:
                     raise TypeError('Presence field \'%s\' does not match type \'%s\'' % (key, dict(self._types)[key]))
+            if isinstance(dictionary[key], ActivityType):
+                dictionary[key] = dictionary[key].value
         return dictionary
 
     def to_JSON(self) -> str:
         return json.dumps(self._activity)
     
     def to_dict(self) -> dict:
-        return self._activity
+        return self._activity.copy()
     
     def __str__(self) -> str:
         ret = []

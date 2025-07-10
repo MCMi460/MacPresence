@@ -7,7 +7,7 @@ long_description = (directory / 'README.md').read_text()
 
 setuptools.setup(
 	name = 'mac-presence',
-	version = '1.0.0',
+	version = '1.1.0',
 	description = 'Discord Rich Presence wrapper for MacOS',
 	long_description = long_description,
 	long_description_content_type = 'text/markdown',
