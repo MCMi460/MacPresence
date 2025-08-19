@@ -16,8 +16,10 @@ class Presence:
             ("end", int),
             ("large_image", str),
             ("large_text", str),
+            ("large_url", str),
             ("small_image", str),
             ("small_text", str),
+            ("small_url", str),
             ("id", str),
             ("size", tuple),
             ("match", str),
@@ -42,8 +44,10 @@ class Presence:
                 "assets": {
                     "large_image": fields.get("large_image"),
                     "large_text": fields.get("large_text"),
+                    "large_url": fields.get("large_url"),
                     "small_image": fields.get("small_image"),
                     "small_text": fields.get("small_text"),
+                    "small_url": fields.get("small_url"),
                 },
                 "party": {
                     "id": fields.get("party_id"),

@@ -10,6 +10,7 @@ def main():
         state=input("Your state\n> "),
         details=input("Your details\n> "),
         details_url="https://google.com/",
+        large_url="https://google.com/",
         start=time() - 300,  # Five minutes ago
         end=time() + 300,  # In five minutes
         large_image="https://github.com/fluidicon.png",
